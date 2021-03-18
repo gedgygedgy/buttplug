@@ -1583,3 +1583,23 @@ protocols:
   #   hid:
   #     vendor-id: 0x057e
   #     product-id: 0x2006
+  ear-haptics:
+    http: 
+      url: http://192.168.123.191
+    defaults:
+      name:
+        en-us: Ear Haptics Endpoint
+      messages:
+        VibrateCmd:
+          FeatureCount: 1
+          StepCount:
+            - 80
+    configurations:
+      - identifier:
+          - Ear1
+        name:
+          en-us: Ear1 Haptics
+      - identifier:
+          - Ear2
+        name:
+          en-us: Ear2 Haptics

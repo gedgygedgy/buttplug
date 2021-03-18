@@ -7,6 +7,8 @@ pub mod serialport;
 #[cfg(all(feature = "xinput-manager", target_os = "windows"))]
 pub mod xinput;
 
+pub mod http_endpoint;
+
 use crate::{core::ButtplugResultFuture, device::ButtplugDeviceImplCreator};
 use serde::{Deserialize, Serialize};
 use std::sync::{atomic::AtomicBool, Arc};

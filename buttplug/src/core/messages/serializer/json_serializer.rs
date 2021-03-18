@@ -62,16 +62,20 @@ where
 
 fn deserialize_to_message<T>(
   validator: &JSONValidator,
-  msg: String,
+  msg: &String,
 ) -> Result<Vec<T>, ButtplugSerializerError>
 where
   T: serde::de::DeserializeOwned + Clone,
 {
   // We have to pass back a string formatted error, as SerdeJson's error type
   // isn't clonable.
-  validator.validate(&msg).and_then(|_| {
-    serde_json::from_str::<Vec<T>>(&msg)
-      .map_err(|e| ButtplugSerializerError::JsonSerializerError(format!("{:?}", e)))
+  validator.validate(msg).and_then(|_| {
+    let msgs = serde_json::from_str::<Vec<T>>(msg).into_iter();
+    let mut msg_array: Vec<T> = vec![];
+    for msg in msgs {
+      msg_array.push(msg[0].clone())
+    }
+    Ok(msg_array)
   })
 }
 
@@ -131,7 +135,7 @@ impl ButtplugMessageSerializer for ButtplugServerJSONSerializer {
 
   fn deserialize(
     &self,
-    serialized_msg: ButtplugSerializedMessage,
+    serialized_msg: &ButtplugSerializedMessage,
   ) -> Result<Vec<ButtplugClientMessage>, ButtplugSerializerError> {
     let msg = if let ButtplugSerializedMessage::Text(text_msg) = serialized_msg {
       text_msg
@@ -227,7 +231,7 @@ impl ButtplugMessageSerializer for ButtplugClientJSONSerializer {
 
   fn deserialize(
     &self,
-    msg: ButtplugSerializedMessage,
+    msg: &ButtplugSerializedMessage,
   ) -> Result<Vec<ButtplugCurrentSpecServerMessage>, ButtplugSerializerError> {
     if let ButtplugSerializedMessage::Text(text_msg) = msg {
       deserialize_to_message::<Self::Inbound>(&self.validator, text_msg)
@@ -257,7 +261,7 @@ mod test {
         }]"#;
     let serializer = ButtplugServerJSONSerializer::default();
     serializer
-      .deserialize(ButtplugSerializedMessage::Text(json.to_owned()))
+      .deserialize(&ButtplugSerializedMessage::Text(json.to_owned()))
       .unwrap();
     assert_eq!(
       *serializer.message_version.borrow(),
@@ -275,7 +279,7 @@ mod test {
             }
         }]"#;
     let serializer = ButtplugServerJSONSerializer::default();
-    let msg = serializer.deserialize(ButtplugSerializedMessage::Text(json.to_owned()));
+    let msg = serializer.deserialize(&ButtplugSerializedMessage::Text(json.to_owned()));
     assert!(msg.is_err());
   }
 
@@ -309,7 +313,7 @@ mod test {
     )
     .into()]);
     for msg in incorrect_incoming_messages {
-      let res = serializer.deserialize(ButtplugSerializedMessage::Text(msg.to_owned()));
+      let res = serializer.deserialize(&ButtplugSerializedMessage::Text(msg.to_owned()));
       assert!(res.is_err());
       if let Err(ButtplugSerializerError::MessageSpecVersionNotReceived) = res {
         assert!(false, "Wrong error!");

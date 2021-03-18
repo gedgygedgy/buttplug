@@ -79,6 +79,17 @@ impl BluetoothLESpecifier {
   }
 }
 
+#[derive(Deserialize, Debug, Clone, Default)]
+pub struct HTTPEndpointSpecifier {
+  url: String
+}
+
+impl PartialEq for HTTPEndpointSpecifier {
+  fn eq(&self, _other: &Self) -> bool {
+    true
+  }
+}
+
 #[derive(Deserialize, Debug, Clone, Copy)]
 pub struct XInputSpecifier {
   exists: bool,
@@ -146,6 +157,7 @@ pub enum DeviceSpecifier {
   USB(USBSpecifier),
   Serial(SerialSpecifier),
   XInput(XInputSpecifier),
+  HTTP(HTTPEndpointSpecifier)
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -165,6 +177,7 @@ pub struct ProtocolDefinition {
   pub serial: Option<Vec<SerialSpecifier>>,
   pub hid: Option<Vec<HIDSpecifier>>,
   pub xinput: Option<XInputSpecifier>,
+  pub http: Option<HTTPEndpointSpecifier>,
   pub defaults: Option<ProtocolAttributes>,
   #[serde(default)]
   pub configurations: Vec<ProtocolAttributes>,
@@ -200,6 +213,7 @@ impl PartialEq<DeviceSpecifier> for ProtocolDefinition {
       DeviceSpecifier::BluetoothLE(other_btle) => option_some_eq(&self.btle, other_btle),
       DeviceSpecifier::HID(other_hid) => option_some_eq_vec(&self.hid, other_hid),
       DeviceSpecifier::XInput(other_xinput) => option_some_eq(&self.xinput, other_xinput),
+      DeviceSpecifier::HTTP(other_http) => option_some_eq(&self.http, other_http)
     }
   }
 }

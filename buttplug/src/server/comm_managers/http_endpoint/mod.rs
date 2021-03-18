@@ -1,0 +1,4 @@
+mod http_endpoint_comm_manager;
+mod http_endpoint_device_impl;
+
+pub use http_endpoint_comm_manager::HTTPEndpointCommManager;

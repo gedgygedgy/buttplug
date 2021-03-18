@@ -81,6 +81,14 @@
         }
       }
     },
+    "http-definition": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        }
+      }
+    },
     "usb-definition": {
       "type": "array",
       "items": {
@@ -366,6 +374,9 @@
             },
             "xinput": {
               "$ref": "#/components/xinput-definition"
+            },
+            "http": {
+              "$ref": "#/components/http-definition"
             },
             "defaults": {
               "$ref": "#/components/defaults-definition"
