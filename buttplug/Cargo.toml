@@ -13,7 +13,7 @@ exclude = ["examples/**"]
 
 [features]
 # Basic features
-default=["tokio-runtime", "client", "server", "serialize-json", "btleplug-manager", "websockets", "xinput-manager", "serial-manager", "lovense-dongle-manager", "lovense-connect-service-manager"]
+default=["tokio-runtime", "client", "server", "serialize-json", "btleplug-manager", "websockets", "xinput-manager", "serial-manager", "lovense-dongle-manager", "lovense-connect-service-manager", "hid-manager"]
 client=[]
 server=[]
 serialize-json=[]
@@ -23,6 +23,7 @@ websockets=["serialize-json", "async-tungstenite", "native-tls"]
 xinput-manager=["server"]
 btleplug-manager=["server", "btleplug"]
 serial-manager=["server", "serialport"]
+hid-manager=["hidapi"]
 lovense-dongle-manager=["server", "serialport", "hidapi"]
 lovense-connect-service-manager=["reqwest"]
 # Runtime managers

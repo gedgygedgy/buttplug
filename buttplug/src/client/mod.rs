@@ -331,6 +331,15 @@ impl ButtplugClient {
         .add_comm_manager(XInputDeviceCommunicationManagerBuilder::default())
         .unwrap();
     }
+    #[cfg(all(feature = "hid-manager"))]
+    {
+      use crate::server::comm_managers::hid::hid_comm_manager::HIDCommunicationManagerBuilder;
+      connector
+        .server_ref()
+        .add_comm_manager(HIDCommunicationManagerBuilder::default())
+        .unwrap();
+    }
+    
     self.connect(connector).await
   }
 

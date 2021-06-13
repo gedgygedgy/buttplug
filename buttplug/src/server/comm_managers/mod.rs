@@ -9,7 +9,10 @@ pub mod xinput;
 #[cfg(feature = "lovense-connect-service-manager")]
 pub mod lovense_connect_service;
 
+#[cfg(feature = "hid-manager")]
+pub mod hid;
 pub mod util;
+
 use crate::{core::ButtplugResultFuture, device::ButtplugDeviceImplCreator};
 use serde::{Deserialize, Serialize};
 use std::sync::{atomic::AtomicBool, Arc};

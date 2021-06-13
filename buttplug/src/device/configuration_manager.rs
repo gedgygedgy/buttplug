@@ -126,6 +126,15 @@ pub struct HIDSpecifier {
   product_id: u16,
 }
 
+impl HIDSpecifier {
+  pub fn new(vendor_id: u16, product_id: u16) -> Self {
+    Self {
+      vendor_id,
+      product_id
+    }
+  }
+}
+
 #[derive(Deserialize, Debug, Clone, Default)]
 pub struct SerialSpecifier {
   #[serde(rename = "baud-rate")]
