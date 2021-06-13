@@ -28,6 +28,7 @@ pub mod prettylove;
 pub mod raw_protocol;
 pub mod realov;
 pub mod svakom;
+pub mod switch_joycon;
 pub mod thehandy;
 pub mod vibratissimo;
 pub mod vorze_sa;
@@ -90,6 +91,7 @@ pub fn get_default_protocol_map() -> DashMap<String, TryCreateProtocolFunc> {
   add_to_protocol_map::<raw_protocol::RawProtocol>(&map, "raw");
   add_to_protocol_map::<realov::Realov>(&map, "realov");
   add_to_protocol_map::<svakom::Svakom>(&map, "svakom");
+  add_to_protocol_map::<switch_joycon::SwitchJoycon>(&map, "switch-joycon");
   add_to_protocol_map::<thehandy::TheHandy>(&map, "thehandy");
   add_to_protocol_map::<vibratissimo::Vibratissimo>(&map, "vibratissimo");
   add_to_protocol_map::<vorze_sa::VorzeSA>(&map, "vorze-sa");

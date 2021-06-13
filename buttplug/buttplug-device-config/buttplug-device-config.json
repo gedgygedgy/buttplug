@@ -2633,6 +2633,31 @@
           }
         }
       }
+    },
+    "switch-joycon": {
+      "hid": [
+        {
+          "vendor-id": 1406,
+          "product-id": 8198
+        },
+        {
+          "vendor-id": 1406,
+          "product-id": 8199
+        }
+      ],
+      "defaults": {
+        "name": {
+          "en-us": "Nintendo Switch Joycon"
+        },
+        "messages": {
+          "VibrateCmd": {
+            "FeatureCount": 1,
+            "StepCount": [
+              1252
+            ]
+          }
+        }
+      }
     }
   }
 }

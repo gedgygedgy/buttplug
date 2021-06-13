@@ -1768,7 +1768,17 @@ protocols:
           FeatureCount: 1
           StepCount:
             - 15
-  # nintendo-joycon:
-  #   hid:
-  #     vendor-id: 0x057e
-  #     product-id: 0x2006
+  switch-joycon:
+    hid:
+      - vendor-id: 0x057e
+        product-id: 0x2006
+      - vendor-id: 0x057e
+        product-id: 0x2007
+    defaults:
+      name:
+        en-us: Nintendo Switch Joycon
+      messages:
+        VibrateCmd:
+          FeatureCount: 1
+          StepCount:
+            - 1252
