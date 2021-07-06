@@ -1,13 +1,13 @@
+use super::btleplug_device_impl::BtlePlugDeviceImplCreator;
 use crate::server::comm_managers::DeviceCommunicationEvent;
 use btleplug::{
-  api::{Central, Manager as _, CentralEvent, Peripheral},
+  api::{Central, CentralEvent, Manager as _, Peripheral},
   platform::Manager,
 };
 use futures::{
   future::{BoxFuture, FutureExt},
   StreamExt,
 };
-use super::btleplug_device_impl::BtlePlugDeviceImplCreator;
 use tokio::sync::mpsc::{Receiver, Sender};
 
 #[derive(Debug, Clone, Copy)]
@@ -50,7 +50,7 @@ impl BtleplugAdapterTask {
 
     let mut events = adapter.events().await.unwrap();
 
-    let mut tried_addresses = vec!();
+    let mut tried_addresses = vec![];
 
     loop {
       select! {
@@ -61,10 +61,10 @@ impl BtleplugAdapterTask {
               // If a device has no discernable name, we can't do anything
               // with it, just ignore it.
               let properties = peripheral.properties().await.unwrap();
-              if let Some(name) = properties.local_name {
+              if let Some(Some(name)) = properties.map(|p| p.local_name) {
                 let span = info_span!(
                   "btleplug enumeration",
-                  address = tracing::field::display(properties.address),
+                  address = tracing::field::display(bd_addr),
                   name = tracing::field::display(&name)
                 );
                 let _enter = span.enter();
@@ -73,16 +73,15 @@ impl BtleplugAdapterTask {
                 // at the moment. Most devices don't send services on
                 // advertisement.
                 if !name.is_empty()
-                  && !tried_addresses.contains(&properties.address)
+                  && !tried_addresses.contains(&bd_addr)
                   //&& !connected_addresses_handler.contains_key(&properties.address)
                 {
-                  let address = properties.address;
-                  debug!("Found new bluetooth device: {} {}", name, address);
-                  tried_addresses.push(address);
+                  debug!("Found new bluetooth device: {} {}", name, bd_addr);
+                  tried_addresses.push(bd_addr);
 
                   let device_creator = Box::new(BtlePlugDeviceImplCreator::new(
                     &name,
-                    &properties.address,
+                    &bd_addr,
                     manager.clone(),
                     peripheral.clone()
                   ));
@@ -91,7 +90,7 @@ impl BtleplugAdapterTask {
                     .event_sender
                     .send(DeviceCommunicationEvent::DeviceFound {
                       name,
-                      address: address.to_string(),
+                      address: bd_addr.to_string(),
                       creator: device_creator,
                     })
                     .await
@@ -104,7 +103,7 @@ impl BtleplugAdapterTask {
               } else {
                 trace!(
                   "Device {} found, no advertised name, ignoring.",
-                  properties.address
+                  bd_addr
                 );
               }
             }
