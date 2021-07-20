@@ -8,6 +8,9 @@ cfg_if::cfg_if! {
   } else if #[cfg(feature = "tokio-runtime")] {
     mod tokio;
     pub use self::tokio::{TokioAsyncManager as AsyncManager, spawn, spawn_with_handle, block_on};
+  } else if #[cfg(feature = "android-runtime")] {
+    mod android;
+    pub use self::android::{AndroidAsyncManager as AsyncManager, init, spawn, spawn_with_handle, block_on};
   }
   else {
     std::compile_error!("Please choose a runtime feature: tokio-runtime, wasm-bindgen-runtime, dummy-runtime");
